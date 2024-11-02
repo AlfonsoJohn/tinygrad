@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import multiprocessing, pickle, functools, difflib, os, threading, json, time, sys, webbrowser, socket
+import multiprocessing, functools, difflib, os, threading, json, time, sys, webbrowser, socket
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 from dataclasses import asdict, dataclass
@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Tuple, Optional
 from tinygrad.helpers import colored, getenv, to_function_name, tqdm, unwrap, word_wrap
 from tinygrad.ops import TrackedRewriteContext, UOp, UOps, lines
 from tinygrad.codegen.kernel import Kernel
+import fickling
 
 uops_colors = {UOps.ALU: "#ffffc0", UOps.LOAD: "#ffc0c0", UOps.STORE: "#c0ffc0", UOps.CONST: "#e0e0e0", UOps.VCONST: "#e0e0e0",
                UOps.DEFINE_GLOBAL: "#ffe0b0", UOps.DEFINE_LOCAL: "#ffe0d0", UOps.DEFINE_ACC: "#f0ffe0", UOps.REDUCE: "#C4A484",
@@ -129,7 +130,7 @@ if __name__ == "__main__":
   multiprocessing.current_process().name = "VizProcess"    # disallow opening of devices
   st = time.perf_counter()
   print("*** viz is starting")
-  with open("/tmp/rewrites.pkl", "rb") as f: contexts: List[Tuple[Any, List[TrackedRewriteContext]]] = pickle.load(f)
+  with open("/tmp/rewrites.pkl", "rb") as f: contexts: List[Tuple[Any, List[TrackedRewriteContext]]] = fickling.load(f)
   print("*** unpickled saved rewrites")
   kernels = get_metadata(contexts)
   if getenv("FUZZ_VIZ"):
