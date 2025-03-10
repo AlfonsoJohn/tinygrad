@@ -4,13 +4,14 @@ from hexdump import hexdump
 import pathlib, sys
 from tinygrad.helpers import to_mv, getenv
 from tinygrad.runtime.autogen import adreno
+import defusedxml.ElementTree
+
 sys.path.append(pathlib.Path(__file__).parent.parent.parent.as_posix())
 
 IOCTL = getenv("IOCTL", 0)
 
 ops = {}
-import xml.etree.ElementTree as ET
-xml = ET.parse(pathlib.Path(__file__).parent / "adreno_pm4.xml")
+xml = defusedxml.ElementTree.parse(pathlib.Path(__file__).parent / "adreno_pm4.xml")
 for child in xml.getroot():
   if 'name' in child.attrib and child.attrib['name'] == "adreno_pm4_type3_packets":
     for sc in child:
