@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import List, Optional, Dict, Tuple, Any, cast, Protocol, Type, Union
-import contextlib, decimal, statistics, random, json, atexit, time, array, ctypes
+import contextlib, decimal, statistics, json, atexit, time, array, ctypes
 from tinygrad.helpers import PROFILEPATH, PROFILE, from_mv, getenv
 from tinygrad.renderer import Renderer
 from tinygrad.device import BufferOptions, Allocator, Compiler, Compiled, LRUAllocator
+import secrets
 
 # **************** for HCQ Compatible Devices ****************
 
@@ -396,7 +397,7 @@ class HCQCompiled(Compiled):
     choices: List = [(d, d.hw_compute_queue_t, []) for d in self.devices]
     choices += [(d, d.hw_copy_queue_t, []) for d in self.devices if d.hw_copy_queue_t is not None]
     for _ in range(100*len(self.devices)):
-      d,q,l = random.choice(choices)
+      d,q,l = secrets.choice(choices)
       l.append(_sync_cpu_queue(d,q))
     for d,q,l in choices:
       if q == d.hw_compute_queue_t: d.gpu2cpu_compute_time_diff = statistics.median(l)
