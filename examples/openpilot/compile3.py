@@ -1,5 +1,7 @@
 import os, sys, pickle, time
 import numpy as np
+import fickling
+
 if "FLOAT16" not in os.environ: os.environ["FLOAT16"] = "1"
 if "IMAGE" not in os.environ: os.environ["IMAGE"] = "2"
 if "NOLOCALS" not in os.environ: os.environ["NOLOCALS"] = "1"
@@ -60,7 +62,7 @@ def compile():
 
 def test(test_val=None):
   with open(OUTPUT, "rb") as f:
-    run = pickle.load(f)
+    run = fickling.load(f)
   Tensor.manual_seed(100)
   new_inputs = {nm:Tensor.randn(*st.shape, dtype=dtype).mul(8).realize() for nm, (st, _, dtype, _) in
                 sorted(zip(run.captured.expected_names, run.captured.expected_st_vars_dtype_device))}
